@@ -45,6 +45,7 @@ echo -e "\e[1;32m 7) Phishing Tools \e[0m"
 echo -e "\e[1;32m 8) OS installer \e[0m"
 echo -e "\e[1;32m 9) About \e[0m"
 echo -e "\e[1;32m 10)ATHEX TOOLKIT 50+ TOOLS \e[0m"
+echo -e "\e[1;32m U) UPDATE \e[0m"
 echo -e "\e[1;32m A) Press A for installing All \e[0m"
 echo -e "\e[1;32m X) For Exit \e[0m"
 echo -e "\e[1;32m <~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~> \e[0m"
@@ -1311,6 +1312,213 @@ case $option in
                 ;;
         esac
         ;; 
+    U)
+        clear
+        figlet -c "ATHEX BLACK HAT"
+        echo -e "\e[1;32m<~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>\e[0m"
+        echo -e "\e[1;32m<~~~~~~~~~~~~~~Updating F-SOCIETY~~~~~~~~~~~~~~~>\e[0m"
+        echo -e "\e[1;32mCreating update script...\e[0m"
+        
+        # Create the update script
+        cat > update-fsociety.sh << 'EOF'
+#!/bin/bash
+
+# Colors for output
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# F-SOCIETY Repository configuration
+REPO_URL="https://github.com/Athexhacker/F-SOCIETY.git"
+PROJECT_DIR="./F-SOCIETY"
+MAIN_SCRIPT="run.sh"
+BRANCH="main"
+
+# Function to print colored output
+print_color() {
+    local color=$1
+    local message=$2
+    echo -e "${color}${message}${NC}"
+}
+
+# Animated spinner
+spinner() {
+    local pid=$1
+    local delay=0.1
+    local spinstr='|/-\'
+    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+        local temp=${spinstr#?}
+        printf " [%c]  " "$spinstr"
+        local spinstr=$temp${spinstr%"$temp"}
+        sleep $delay
+        printf "\b\b\b\b\b\b"
+    done
+    printf "    \b\b\b\b"
+}
+
+# F-SOCIETY Banner
+show_banner() {
+    clear
+    print_color $BLUE "╔══════════════════════════════════════════════╗"
+    print_color $BLUE "║               F-SOCIETY UPDATER              ║"
+    print_color $BLUE "║                                              ║"
+    print_color $BLUE "║           🏴‍☠️  UPDATE IN PROGRESS 🏴‍☠️       ║"
+    print_color $BLUE "╚══════════════════════════════════════════════╝"
+    echo ""
+    print_color $YELLOW "📍 Repository: $REPO_URL"
+    print_color $YELLOW "📍 Branch: $BRANCH"
+    print_color $YELLOW "📍 Target Directory: $PROJECT_DIR"
+    echo ""
+    print_color $GREEN "🚀 Starting automated update process..."
+    echo ""
+}
+
+# Update process
+update_tool() {
+    show_banner
+    
+    # Step 1: Remove old files
+    print_color $YELLOW "Step 1: Removing old F-SOCIETY files..."
+    if [ -d "$PROJECT_DIR" ]; then
+        print_color $YELLOW "📁 Removing existing directory: $PROJECT_DIR"
+        rm -rf "$PROJECT_DIR" &
+        spinner $!
+        print_color $GREEN "✅ Old files removed successfully!"
+    else
+        print_color $GREEN "ℹ️  Fresh installation - no old files to remove"
+    fi
+    
+    echo ""
+    
+    # Step 2: Clone repository
+    print_color $YELLOW "Step 2: Cloning F-SOCIETY repository..."
+    print_color $BLUE "🔗 Cloning from: $REPO_URL"
+    git clone -b "$BRANCH" "$REPO_URL" "$PROJECT_DIR" 2>&1 &
+    spinner $!
+    
+    if [ $? -eq 0 ]; then
+        print_color $GREEN "✅ Repository cloned successfully!"
+    else
+        print_color $RED "❌ Failed to clone repository!"
+        print_color $YELLOW "💡 Please check your internet connection and repository URL"
+        exit 1
+    fi
+    
+    echo ""
+    
+    # Step 3: Make scripts executable
+    print_color $YELLOW "Step 3: Setting up permissions..."
+    
+    # Check if main script exists and make it executable
+    if [ -f "$PROJECT_DIR/$MAIN_SCRIPT" ]; then
+        chmod +x "$PROJECT_DIR/$MAIN_SCRIPT"
+        print_color $GREEN "✅ Main script made executable: $MAIN_SCRIPT"
+    else
+        print_color $YELLOW "⚠️  Main script not found: $MAIN_SCRIPT"
+        print_color $YELLOW "📋 Available scripts in repository:"
+        find "$PROJECT_DIR" -name "*.sh" -o -name "*.py" | while read file; do
+            chmod +x "$file"
+            print_color $BLUE "   - $(basename "$file")"
+        done
+    fi
+    
+    # Make all shell scripts executable
+    find "$PROJECT_DIR" -name "*.sh" -exec chmod +x {} \; 2>/dev/null &
+    spinner $!
+    print_color $GREEN "✅ All scripts made executable!"
+    
+    echo ""
+    
+    # Step 4: Show update summary
+    print_color $GREEN "🎉 F-SOCIETY Update Completed Successfully!"
+    echo ""
+    print_color $BLUE "📊 Update Summary:"
+    print_color $BLUE "   📁 Project Location: $(pwd)/$PROJECT_DIR"
+    print_color $BLUE "   🔗 Repository: $REPO_URL"
+    print_color $BLUE "   🎯 Branch: $BRANCH"
+    echo ""
+    
+    # Step 5: Run the main script
+    print_color $GREEN "🚀 Launching F-SOCIETY..."
+    print_color $BLUE "=================================================="
+    echo ""
+    
+    cd "$PROJECT_DIR"
+    
+    # Try to find and run the main script
+    if [ -f "$MAIN_SCRIPT" ]; then
+        ./"$MAIN_SCRIPT"
+    else
+        print_color $YELLOW "⚠️  Main script not found. Listing available executables:"
+        echo ""
+        find . -type f -executable -name "*.sh" -o -name "*.py" | while read file; do
+            print_color $BLUE "➡️  Available: $file"
+        done
+        echo ""
+        print_color $YELLOW "💡 Please run the appropriate script manually from the F-SOCIETY directory"
+    fi
+}
+
+# Pre-flight checks
+preflight_checks() {
+    print_color $BLUE "🔍 Running pre-flight checks..."
+    
+    if ! command -v git &> /dev/null; then
+        print_color $RED "❌ Git is not installed. Please install git first:"
+        print_color $YELLOW "   sudo apt-get install git   # Debian/Ubuntu"
+        print_color $YELLOW "   brew install git           # macOS"
+        print_color $YELLOW "   apt install git            # Termux"
+        print_color $YELLOW "   yum install git            # CentOS/RHEL"
+        exit 1
+    else
+        print_color $GREEN "✅ Git is installed"
+    fi
+    
+    # Check internet connectivity
+    if command -v curl &> /dev/null; then
+        if curl -s --head https://github.com | head -n 1 | grep "200\|302" > /dev/null; then
+            print_color $GREEN "✅ Internet connectivity confirmed"
+        else
+            print_color $RED "❌ No internet connectivity!"
+            exit 1
+        fi
+    elif command -v wget &> /dev/null; then
+        if wget -q --spider https://github.com; then
+            print_color $GREEN "✅ Internet connectivity confirmed"
+        else
+            print_color $RED "❌ No internet connectivity!"
+            exit 1
+        fi
+    else
+        print_color $YELLOW "⚠️  Cannot check internet connectivity (curl/wget not found)"
+    fi
+    
+    echo ""
+}
+
+# Main execution
+main() {
+    print_color $BLUE "================================================"
+    print_color $BLUE "           F-SOCIETY AUTO-UPDATER"
+    print_color $BLUE "================================================"
+    echo ""
+    
+    preflight_checks
+    update_tool
+}
+
+# Run the script
+main "$@"
+EOF
+
+        # Make the update script executable and run it
+        chmod +x update-fsociety.sh
+        echo -e "\e[1;32m✅ Update script created successfully!\e[0m"
+        echo -e "\e[1;32m🚀 Running update process...\e[0m"
+        ./update-fsociety.sh
+        ;;
     A)
         clear
         figlet -c "ATHEX BLACK HAT"
