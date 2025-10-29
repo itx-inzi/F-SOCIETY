@@ -483,6 +483,7 @@ case $option in
         echo -e "\e[1;32m1)  AndroRat\e[0m"
         echo -e "\e[1;32m2)  Csploit\e[0m"
         echo -e "\e[1;32m3)  Hackode\e[0m"
+        echo -e "\e[1;32m4)  F-SOCIETY ( R A T) \e[0m"
         echo -e "\e[1;32mA)  Press A for All\e[0m"
         echo -e "\e[1;32mB)  Press B for Back\e[0m" 
         echo -e "\e[1;32mX)  For Exit\e[0m"
@@ -509,7 +510,13 @@ case $option in
                 echo -e "\e[1;32m<-------------------------------------------------------------------->\e[0m"
                 echo -e "\e[1;32m<-----------------------Installing TheFatRat------------------------->\e[0m"
                 git clone https://github.com/Exploit-install/TheFatRat
-                ;;         
+                ;;    
+            4)  clear
+                figlet -c "ATHEX BLACK HAT"
+                echo -e "\e[1;32m<-------------------------------------------------------------------->\e[0m"
+                echo -e "\e[1;32m<-----------------------Installing F-SOCIETY RAT------------------------->\e[0m"
+                git clone https://github.com/Athexhacker/f-society-rat
+                ;;              
             A)      
                 clear
                 figlet -c "ATHEX BLACK HAT"
@@ -517,7 +524,8 @@ case $option in
                 echo -e "\e[1;32m<---------------------Installing All Tools----------------------->\e[0m"        
                 git clone https://github.com/warecrer/AndroRAT
                 git clone https://github.com/cSploit/android   
-                git clone https://github.com/Exploit-install/TheFatRat                  
+                git clone https://github.com/Exploit-install/TheFatRat 
+                git clone https://github.com/Athexhacker/f-society-rat        
                 ;;     
             B)     
                 bash run.sh
@@ -1622,6 +1630,7 @@ EOF
         git clone https://github.com/Athexhacker/ATHEXSQL
         git clone https://github.com/Athexhacker/allhackingtool
         git clone https://github.com/Athexhacker/RED-X
+        git clone https://github.com/Athexhacker/f-society-rat
         ;;
     X)
         exit
